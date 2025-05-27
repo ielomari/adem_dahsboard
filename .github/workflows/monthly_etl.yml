@@ -1,0 +1,36 @@
+name: Monthly ETL ADEM
+
+on:
+  schedule:
+    - cron: '0 9 1 * *'  # 1er jour du mois à 09h00 UTC
+  workflow_dispatch:      # Lancement manuel possible
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+
+    env:
+      PG_DB: ${{ secrets.PG_DB }}
+      PG_HOST: ${{ secrets.PG_HOST }}
+      PG_USER: ${{ secrets.PG_USER }}
+      PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+      PG_PORT: "5432"
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v2
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libpq-dev
+
+    - name: Install R packages
+      run: |
+        Rscript -e 'install.packages(c("DBI", "RPostgres", "readr", "dplyr"))'
+
+    - name: Run ETL script
+      run: Rscript run_etl.R
