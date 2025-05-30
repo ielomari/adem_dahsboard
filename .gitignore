@@ -7,3 +7,6 @@
 data/fetched/*.csv
 
 .Renviron
+
+# renv
+/renv/library/

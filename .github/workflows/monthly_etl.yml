@@ -2,8 +2,8 @@ name: Monthly ETL ADEM
 
 on:
   schedule:
-    - cron: '0 9 1 * *'  # 1er jour du mois à 09h00 UTC
-  workflow_dispatch:      # Lancement manuel possible
+    - cron: '0 9 1 * *'
+  workflow_dispatch:
 
 jobs:
   etl:
@@ -28,9 +28,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libpq-dev
 
-    - name: Install R packages
+    - name: Restore R packages with renv
       run: |
-        Rscript -e 'install.packages(c("DBI", "RPostgres", "readr", "dplyr"))'
+        Rscript -e 'install.packages("renv")'
+        Rscript -e 'renv::restore()'
 
     - name: Run ETL script
       run: Rscript run_etl.R
