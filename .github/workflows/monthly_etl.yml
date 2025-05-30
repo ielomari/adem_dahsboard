@@ -32,6 +32,7 @@ jobs:
       run: |
         Rscript -e 'install.packages("renv")'
         Rscript -e 'renv::restore()'
+        Rscript -e 'renv::status()'
 
     - name: Run ETL script
       run: Rscript run_etl.R
